@@ -173,3 +173,9 @@ class NocoDBClient:
         self, columnId: str,
     ) -> dict:
         pass
+
+    @abstractmethod
+    def upload_attachment(
+        self, path: str, scope: str,
+    ) -> dict:
+        pass

@@ -1,4 +1,5 @@
 from typing import Optional
+from pathlib import Path
 from ..nocodb import (
     NocoDBClient,
     NocoDBProject,
@@ -209,4 +210,22 @@ class NocoDBRequestsClient(NocoDBClient):
         return self._request(
             "POST",
             url=self.__api_info.get_column_uri(columnId, "primary"),
+        ).json()
+
+    def upload_attachment(self, path: Path, scope: str="workspacePics") -> dict:
+        '''
+        path:	string
+                Example: path=download/noco/jango_fett/Table1/attachment/uVbjPVQxC_SSfs8Ctx.jpg
+                Target File Path
+        scope:	string
+                Enum: "workspacePics" "profilePics" "organizationPics"
+                Example: scope=workspacePics
+        '''
+        self.__session.headers.pop("Content-Type")
+        return self._request(
+            "POST",
+            url=self.__api_info.get_upload_attachment_uri(),
+            params = { "scope": scope },
+            data = {'title': path.name,},
+            files = { 'file': open(path, 'rb') }
         ).json()
